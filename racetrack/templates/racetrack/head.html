@@ -1,0 +1,115 @@
+<meta name="race-id" content="{{race.id}}"/>
+<meta name="current-run" content="{{current_run}}"/>
+<link rel="shortcut icon" type="image/png" href="{{ static('racetrack/images/favicon.ico') }}"/>
+{% if cdn %}
+<script src="https://cdn.jsdelivr.net/combine/npm/jquery@3,npm/js-cookie@2,npm/lodash@4"></script>
+<script src="https://kit.fontawesome.com/88c0045e69.js" crossorigin="anonymous"></script>
+<script src="https://www.jsviews.com/download/jsrender.min.js"></script>
+    {% if datatables %}
+<script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.24/js/dataTables.bulma.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css"/>
+    {% endif %}
+{% else %}
+<script type="text/javascript" src="{{ static('racetrack/lib/js/jquery-3.6.0.min.js') }}"></script>
+<script type="text/javascript" src="{{ static('racetrack/lib/js/js.cookie.min.js') }}"></script>
+<script type="text/javascript" src="{{ static('racetrack/lib/js/lodash.min.js') }}"></script>
+<script type="text/javascript" src="{{ static('racetrack/lib/js/jsrender.min.js') }}"></script>
+{% if datatables %}
+<script type="text/javascript" src="{{ static('racetrack/lib/js/datatables.min.js') }}"></script>
+<script type="text/javascript" src="{{ static('racetrack/lib/js/dataTables.bulma.min.js') }}"></script>
+<link rel="stylesheet" type="text/css" href="{{ static('racetrack/lib/css/datatables.min.css') }}"/>
+    {% endif %}
+{% endif %}
+<script type="text/javascript" src="{{ static('racetrack/scripts/app.js') }}"></script>
+<script type="text/javascript" src="{{ static('racetrack/scripts/' + file_name + '.js') }}"></script>
+<link rel="stylesheet" type="text/css" href="{{ static('racetrack/styles/' + file_name + '.css') }}">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script id="addCar" type="text/x-jsrender">
+    <!--<script>
+        var tmpl = $.templates("#addCar");
+        var html = tmpl.render();
+        $("#add_car_tmplt").html(html);
+
+        $('#car_number').on('input', function() {
+            let value = $(this).val();
+            let help = $('#car_number_help');
+            let integer = /^-?\d+$/.test(value);
+            let inArray = $.inArray(value, cars_num.toArray()) !== -1;
+            if (!value) {
+                help.html("-");
+                help.removeClass('is-danger').addClass('invisible');
+            } else if (!integer) {
+                help.html("Not an integer");
+                help.removeClass('invisible').addClass('is-danger');
+            } else if (inArray) {
+                help.html("Car #" + value + " already exists");
+                help.removeClass('invisible').addClass('is-danger');
+            } else {
+                help.html("-");
+                help.removeClass('is-danger').addClass('invisible');
+            }
+        });
+    <script>-->
+    {% if car_error %}<p class="content"><strong>{{ car_error }}</strong></p>{% endif %}
+    <div class="level noBottomMargin">
+        <form id="add_car" class="level-left" action="{{ url('racetrack:add_car', race_id=race.id) }}" method="POST">
+            <input type="hidden" name="csrfmiddlewaretoken" value="{{csrf_token}}">
+            <div class="level-item">
+                <div class="field has-addons">
+                    <div class="control">
+                        <input class="input" type="text" name="name" id="car_name" placeholder="Car owner">
+                    </div>
+                    <div class="control">
+                        <input class="input" type="text" name="number" id="car_number" placeholder="Car #" >
+                        <p id="car_number_help"  class="help invisible">-</p>
+                    </div>
+                    <div class="control">
+                        <input type="submit" class="button" value="Add Car">
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</script> <!--array of car #s-->
+<script id="carTbl" type="text/x-jsrender">
+    <table  id="cars_{% raw %}{{:name}}{% endraw %}" class="table is-fullwidth is-bordered is-striped is-hoverable">
+        <thead>
+            <tr>
+                <th id="#cars_num_{% raw %}{{:name}}{% endraw %}">#</th>
+                <th id="#cars_name_{% raw %}{{:name}}{% endraw %}">Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for car in race.car_set.all() %}
+                <tr>
+                    <td>{{ car.number }}</td>
+                    <td>{{ car.name }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</script> <!-- pass name -->
+<script id="resultsCard" type="text/x-jsrender">
+    <div id="results_card" class="card {% if datatables %}hidden{% endif %}">
+        <div class="card-header">
+            <div id="results_title" class="run_title card-header-title">Run #{{ current_run }}</div>
+        </div>
+        <div class="card-content">
+          <div id="results_tracks" class="level columns">
+              {% for track in race.track_set.all() %}
+                <div id="track_{{ track.number }}" class="results_track level-item column has-text-centered">
+                    <div class="field content">
+                        <p class="heading">Track {{ track.number }}</p>
+                        <p class="track_car_number track_car title">-</p>
+                        <p class="track_car_name track_car subtitle invisible">-</p>
+                        <p class="track_car_mph track_car title invisible">-</p>
+                        <p class="track_car_fps track_car title invisible">-</p>
+                        <p class="track_car_mps track_car title invisible">-</p>
+                    </div>
+                </div>
+              {% endfor %}
+          </div>
+        </div>
+    </div>
+</script>

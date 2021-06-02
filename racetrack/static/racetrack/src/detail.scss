@@ -1,0 +1,101 @@
+@import "app.scss";
+
+.centerText {
+    text-align: center;
+}
+
+body, body > div.columns {
+  margin-bottom: 0 !important;
+}
+
+#add_car {
+    width: 45%;
+    > .level-item {
+        width: 100%;
+        > .field.has-addons {
+            width: 110%;
+            > .control:first-child {
+                width: 200%;
+            }
+            > .control:nth-child(2) {
+                width: 50%;
+            }
+        }
+    }
+    #car_name {
+        //width: 20%;
+    }
+    #car_number {
+        //width: 5%;
+    }
+}
+
+
+
+.selected_track {
+    background-color: $grey-lightest !important;
+}
+.selected {
+    background-color: $grey-lighter !important;
+}
+
+
+#run_card {
+    margin-bottom: 1.5em;
+    .addToTrack {
+        //transition: 2s;
+    }
+}
+
+#leaderboard {
+
+    margin:0 auto;
+    padding: 0;
+    overflow: clip;
+    > .is-parent {
+        background-color: $primary;
+    }
+    .tile {
+        //border: solid 1px;
+    }
+    #lboard_title {
+        img {
+            filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(201deg) brightness(101%) contrast(104%);
+        }
+        h3 {
+            color: findColorInvert($primary);
+        }
+        align-items: center;
+        padding: .3em;
+        figure {
+            margin-left: 0em;
+            margin-right: 0em;
+        }
+    }
+    #lboard_scores > .is-parent {
+        padding-left: inherit;
+        padding-right: inherit;
+    }
+}
+
+
+
+
+#tabs-with-content {
+    .tabs:not(:last-child) {
+        margin-bottom: 0;
+    }
+    .tab-content {
+        padding: 1rem;
+        display: none;
+    }
+    .tab-content.is-active {
+        display: block;
+    }
+}
+table.dataTable {
+    border-collapse: collapse !important;
+}
+.table,.noBottomMargin {
+    margin-bottom: 0px !important;
+}

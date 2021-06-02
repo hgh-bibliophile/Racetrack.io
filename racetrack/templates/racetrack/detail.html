@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+  <head>
+		<meta charset="utf-8">
+		<title>{{ race.name }}</title>
+	  	{% set runs=race.run_set.all() %}
+		{% if runs %}
+			{% set current_run=runs.values_list('number', flat=True)|max %}
+		{% else %}
+			{% set current_run=1 %}
+		{% endif %}
+	  	{% set datatables=true %}
+	  	{% set cdn=false %}
+	  	{% set file_name='detail' %}
+	  	{% include 'racetrack/head.html' %}
+  </head>
+  <body>
+  	<nav id="header" class="navbar" role="navigation" aria-label="main navigation">
+	  <div class="navbar-brand">
+		<a id="header-title" class="navbar-item" href="{{ url('racetrack:index') }}"><img src="{{ static('racetrack/images/race-car.svg') }}" width="112" height="50">Racetrack.io</a>
+	  </div>
+
+	  <div id="navbarBasicExample" class="navbar-menu">
+		<div class="navbar-start">
+		  <a class="navbar-item" href="{{ url('racetrack:index') }}">Home</a>
+		  <a class="navbar-item" href="{{ url('racetrack:speeds', race_id=race.id) }}">Speeds</a>
+		</div>
+
+		<div class="navbar-end">
+		  <div class="navbar-item">
+			<div class="buttons">
+			  <a class="button is-primary">
+				<strong>Start</strong>
+			  </a>
+			</div>
+		  </div>
+		</div>
+	  </div>
+	</nav>
+
+
+	<div class="columns">
+		<div id="dashboard" class="column is-4">
+			<div id="race_card" class="card">
+				<div class="card-content content">
+					<div id="info" class="media">
+					  <div class="media-left">
+						<figure class="image is-48x48">
+							<img src="{{ static('racetrack/images/race_dash.svg') }}" alt="Placeholder image">
+						</figure>
+					  </div>
+					  <div class="media-content">
+						<p class="title is-4 cursive" style="">{{ race.name }}</p>
+						<p class="subtitle is-6"><strong><time >{{ race.date }}</time></strong> @ {{ race.place }}</p>
+					  </div>
+					</div>
+					<div id="stats" class="level">
+					  <div class="level-item has-text-centered">
+						<div>
+						  <p class="heading">Cars</p>
+						  <p class="title">{{ race.car_set.all().count() }}</p>
+						</div>
+					  </div>
+					  <div class="level-item has-text-centered">
+						<div>
+						  <p class="heading">Runs</p>
+						  <p id="race_runs" class="race_runs title">{{ race.run_set.all().count() }}</p>
+						</div>
+					  </div>
+					  <div class="level-item has-text-centered">
+						<div>
+						  <p class="heading">Top Speed</p>
+						  <p class="title">125 mph</p>
+						</div>
+					  </div>
+					</div>
+					<div id="leaderboard" class="tile box is-10 is-ancestor is-vertical">
+					  <div class="tile is-parent" >
+						<div class="tile is-child">
+							<div id="lboard_title" class="media">
+							  <div class="media-left" >
+								<figure class="image is-48x48">
+									<img src="{{ static('racetrack/images/leaderboard.svg') }}" alt="Placeholder image">
+								</figure>
+							  </div>
+							  <div class="media-content">
+								  <h3 class="cursive is-3 noBottomMargin" >Leaderboard</h3>
+							  </div>
+							</div>
+						</div>
+					  </div>
+					  <div id="lboard_scores" class="tile is-vertical">
+								<div class="tile is-parent">
+									<div class="tile is-child is-1 centerText"></div>
+									<div class="tile is-child"><strong>Car</strong></div>
+									<div class="tile is-child is-1 centerText">Track</div>
+									<div class="tile is-child is-3">Top Speed</div>
+								</div>
+								{% for car in race.car_set.all()[:10] %}
+									<div class="tile is-parent">
+										<div class="tile is-child is-1 centerText">{{ car.id }}</div>
+										<div class="tile is-child"><strong>{{ car.number }} - {{ car.name }}</strong></div>
+										<div class="tile is-child is-1 centerText">4</div>
+										<div class="tile is-child is-3">125 mph</div>
+									</div>
+								{% endfor %}
+					  </div>
+					</div>
+				</div>
+				<!--<footer class="card-footer">
+					<a href="#" class="card-footer-item">Save</a>
+					<a href="#" class="card-footer-item">Edit</a>
+					<a href="#" class="card-footer-item">Delete</a>
+			  	</footer>-->
+			</div>
+		</div>
+		<div class="column">
+			<div id="tabs-with-content">
+			  <div class="tabs">
+				<ul>
+					<li class="{% if start_tab == 'Cars' %}is-active{% endif %}"><a>Cars</a></li>
+					<li class="{% if start_tab == 'Race' %}is-active{% endif %}"><a>Race</a></li>
+					<li class="{% if start_tab == 'Runs' %}is-active{% endif %}"><a>Runs</a></li>
+				</ul>
+			  </div>
+			  <div>
+				<section class="tab-content {% if start_tab == 'Cars' %}is-active{% endif %}" id="tab-cars"><!--Cars Tab-->
+					<div id="addCar_tmpl"></div>
+					<div id="carTbl_cars_tmpl"></div>
+				</section>
+				<section class="tab-content {% if start_tab == 'Race' %}is-active{% endif %}" id="tab-race">
+
+				</section>
+				<section class="tab-content {% if start_tab == 'Runs' %}is-active{% endif %}" id="tab-runs">
+					<div id="run_card" class="card">
+						<div class="card-header">
+							<div id="run_title" class="run_title card-header-title">Run #{{ current_run + 1 }}</div>
+							<div class="card-header-icon">
+									<div class="control">
+										<button class="button is-rounded is-primary hidden" id="new_run" autocomplete="off">New Run</button>
+									</div>
+									<div class="control"><!--data-ajax-target="{{ url('racetrack:add_run', race_id=race.id) }}" -->
+										<button class="button is-rounded is-primary" id="post_run" autocomplete="off" disabled="True">Start Run</button>
+									</div>
+							</div>
+						</div>
+					  <div class="card-content">
+						  <div id="run_tracks" class="level columns">
+							  {% for track in race.track_set.all() %}
+								<div id="addToTrack_{{ track.number }}" class="run_track level-item column has-text-centered">
+									<div class="field addToTrack_field">
+										<div class="control">
+											<button class="button is-rounded addToTrack" id="{{ track.number }}">Set</button>
+										</div>
+									</div>
+									<div class="field content">
+										<p class="heading">Track {{ track.number }}</p>
+								  		<p class="track_car_id title">-</p>
+								  		<p class="track_car_name subtitle invisible">-</p>
+									</div>
+
+								</div>
+							  {% endfor %}
+						  </div>
+						</div>
+					  </div>
+					<div id="carTbl_runs_tmpl"></div>
+					<div id="resultsCard_tmpl"></div>
+				</section>
+			  </div>
+			</div>
+		</div>
+	</div>
+  </body>
+</html>

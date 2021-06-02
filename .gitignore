@@ -1,0 +1,6 @@
+/test/
+/racetrack/migrations/
+/racetrack/tests.py
+/db.sqlite3
+/requirement.txt
+/requirements.txt

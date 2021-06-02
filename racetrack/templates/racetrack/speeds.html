@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Leaderboard - {{ race.name }}</title>
+        {% set runs=race.run_set.all() %}
+		{% if runs %}
+			{% set current_run=runs.values_list('number', flat=True)|max %}
+		{% else %}
+			{% set current_run=1 %}
+		{% endif %}
+        {% set datatables=false %}
+        {% set cdn=false %}
+	  	{% set file_name='speeds' %}
+	  	{% include 'racetrack/head.html' %}
+    </head>
+    <body>
+        <div id="resultsCard_tmpl"></div>
+    </body>
+</html>
+
