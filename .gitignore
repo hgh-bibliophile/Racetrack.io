@@ -1,6 +1,9 @@
-/test/
 /racetrack/migrations/
+/racetrack/__pycache__/
+/core/__pycache__/
 /racetrack/tests.py
 /db.sqlite3
 /requirement.txt
 /requirements.txt
+/racetrack/static/racetrack/lib/
+/racetrack/static/racetrack/fonts/
