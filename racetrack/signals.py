@@ -1,13 +1,13 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-import WorthyDerby.settings
+import core.settings
 from racetrack.models import Run, Trial
 import serial
 import time
 import pprint
 
-#print(WorthyDerby.settings.REDIS_URL)
+#print(core.settings.REDIS_URL)
 from racetrack.tasks import test_arduinoGetSpeeds
 
 

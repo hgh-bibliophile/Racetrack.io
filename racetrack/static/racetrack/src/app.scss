@@ -2,64 +2,134 @@
 //@import url('https://fonts.googleapis.com/css2?family=Comfortaa');
 @import url('https://fonts.googleapis.com/css2?family=Baloo+2&family=Comfortaa&family=Gruppo&family=Poiret+One&display=swap');
 // Set your brand colors
-$purple: #8A4D76;
-$pink: #FA7C91;
-$brown: #757763;
-$beige-light: #D0D1CD;
-$beige-lighter: #EFF0EB;
+
+
+/* SCSS HEX */
+$cg-blue: #0081a7ff;
+$verdigris: #00afb9ff;
+$rich-black-fogra-29: #001427ff;
+$alabaster: #f4f3eeff;
+$sizzling-red: #ff495cff;
+
+$mobile: 768px;
+$phone: 500px;
 
 @font-face {
   font-family: "Carrinady";
-  src: url("fonts/carrinady.bold.ttf") format("truetype");
+  src: url("../fonts/carrinady.bold.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Monad";
+  src: url("../fonts/Monad.otf") format("opentype");
+}
+@font-face {
+  font-family: "Quicksand Light";
+  src: url("../fonts/quicksand.light-regular.otf") format("opentype");
+}
+@font-face {
+  font-family: "Quicksand";
+  src: url("../fonts/quicksand.book-regular.otf") format("opentype");
+}
+@font-face {
+  font-family: "Carrinady";
+  src: url("../fonts/carrinady.bold.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Waxe";
+  src: url("../fonts/Waxe.otf") format("opentype");
 }
 
 // Update Bulma's global variables
 $family-baloo: 'Baloo 2', cursive;
 $family-comforaa: 'Comfortaa', cursive;
 $family-carrinady: 'Carrinady', sans-serif;
+$family-monad: 'Monad', sans-serif;
+$family-quicksand-light: 'Quicksand Light', sans-serif;
+$family-quicksand: 'Quicksand', sans-serif;
+$family-waxe: 'Waxe', sans-serif;
 $family-gruppo: 'Gruppo', cursive;
 $family-poiret1: 'Poiret One', cursive;
 $family-sans-serif: century gothic, sans-serif;
-//$grey-dark: $brown;
-//$grey-light: $beige-light;
-//$primary: $purple;
-//$link: $pink;
+
+$link: $cg-blue;
+//$link-hover: $sizzling-red;
+$primary: $verdigris;
+$text: $rich-black-fogra-29;
+//$text-light: $brown;
+$text-strong: $text;
+$navbar-item-hover-background-color: white;
+
 
 // Update some of Bulma's component variables
-//$background: #DDE8E6;
-//$control-border-width: 2px;
-//$input-background-color: $beige-lighter;
-//$input-border-color: transparent;
-//$input-shadow: none;
+$background: #F8F9FA;
 
-// Import the rest of Bulma
-@import "C:/Users/Hannah/MasterFiles/Coding/Libraries/bulma-0.9.2/bulma.sass";
 @import url("../lib/css/dataTables.bulma.min.css");
+@import "C:/Users/Hannah/MasterFiles/Coding/Libraries/bulma-0.9.2/bulma.sass";
 
 %font-cursive {
     font-family: $family-comforaa;
     font-weight: $weight-normal !important;
+    color: $text;
 }
+
 body {
     font-family: $family-sans-serif;
-    margin: 15px;
-     background: #F2F6FA;
+    padding: 15px;
 }
+body, body > div.columns {
+    margin-bottom: 0 !important;
+}
+
 .invisible {
     opacity: 0;
 }
 .hidden {
     display: none;
 }
+.centerText {
+    text-align: center;
+}
+.textOverflow {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
+    //flex: 1;
+    flex-grow: 0;
+    flex-shrink: 1;
+}
+.table,.noBottomMargin {
+    margin-bottom: 0px !important;
+}
+
 .card {
     overflow: clip;
     background-color: $background;
 }
+
+//Fonts
 .cursive {
     @extend %font-cursive;
 }
 .comforaa {
    font-family: $family-comforaa;
+}
+.carrinady {
+   font-family: $family-carrinady;
+}
+.monad {
+   font-family: $family-monad;
+   font-weight: $weight-normal !important;
+}
+.quicksand-light {
+   font-family: $family-quicksand-light;
+}
+.quicksand {
+   font-family: $family-quicksand;
+}
+.waxe {
+   font-family: $family-waxe;
+   font-weight: $weight-normal !important;
 }
 .baloo {
     font-family: $family-baloo;
@@ -70,10 +140,177 @@ body {
 .poiret1 {
     font-family: $family-poiret1;
 }
+
+
 #header {
     margin-bottom: 15px;
 }
 #header-title {
     @extend %font-cursive;
     font-size: 25px;
+    color: $primary;
+}
+.navbar-brand {
+    padding-left: 1.25em;
+}
+
+#race_card {
+    #race_img {
+        margin-left: .5rem;
+    }
+    #info > .media-left {
+        width: 4.25rem;
+    }
+    @include until($phone) {
+        #race_img {
+            display: none;
+        }
+        #info {
+            padding-bottom: 0.5rem;
+        }
+    }
+}
+
+#leaderboard {
+    margin:0 auto;
+    padding: 0;
+    overflow: clip;
+    > .is-parent {
+        background-color: $primary;
+    }
+    #lboard_title {
+        img {
+            filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(201deg) brightness(101%) contrast(104%);
+        }
+        h3 {
+            color: findColorInvert($primary);
+        }
+        align-items: center;
+        padding: .3em;
+        figure {
+            margin-left: 0em;
+            margin-right: 0em;
+        }
+    }
+    #lboard_scores {
+        font-size: 1.15rem;
+        .level {
+            margin: 0px;
+        }
+        > .is-parent {
+            padding-left: 1em;
+        }
+        #car-th {
+            overflow: visible;
+            padding-left: 15%;
+            @include until($mobile) {
+                padding-left: 5%;
+            }
+        }
+        #speed-th {
+            text-align: right;
+            padding-right: 10%;
+            @include until($mobile) {
+                padding-right: 5%;
+            }
+        }
+        .divider-row {
+            border-bottom: 1px solid $input-border-color;
+            width: 92.5%;
+            align-self: center;
+            @include until($mobile) {
+                margin-left: (7.5%)/2;
+            }
+        }
+        @include until(1725px) {
+            .data-1 {
+                max-width: 70%;
+            }
+        }
+        .rank {
+            border-right: 1px solid gray;
+            justify-content: left;
+            padding-left: 1.25rem;
+            max-width: 3.5rem;
+            min-width: 3.5rem;
+        }
+        .car_num {
+            justify-content: right;
+            max-width: 2.25rem;
+            min-width: 2.25rem;
+            padding-right: 0;
+        }
+        .dot {
+            min-width: 1rem;
+            max-width: 1rem;
+        }
+        .car {
+            justify-content: left;
+        }
+        .track {
+            max-width: 1.25rem;
+            min-width: 1.25rem;
+        }
+        .speed {
+            max-width: 5.5rem;
+            min-width: 5.5rem;
+            padding-right: 1rem;
+        }
+        @include until($mobile) {
+            font-size: 1rem;
+            .data-1 {
+                max-width: 76.5%;
+            }
+            .rank {
+                padding-left: 0;
+                max-width: 1.75rem;
+                min-width: 1.75rem;
+            }
+            .car_num {
+                min-width: 1.5rem;
+                max-width: 1.5rem;
+            }
+            .dot {
+                display: none;
+            }
+            .track {
+                max-width: 1rem;
+                min-width: 1rem;
+            }
+            .speed {
+                max-width: 3.5rem;
+                min-width: 3.5rem;
+                padding-right: 0.5rem;
+            }
+            @include until($phone) {
+                .data-1 {
+                    max-width: 73%;
+                }
+                .rank {
+                    max-width: 1.5rem;
+                    min-width: 1.5rem;
+                }
+            }
+        }
+    }
+}
+
+.dataTables_wrapper .dataTables_length,
+.dataTables_wrapper .dataTables_filter,
+.dataTables_wrapper .dataTables_info,
+.dataTables_wrapper .dataTables_processing,
+.dataTables_wrapper .dataTables_paginate {
+    color: $text;
+}
+
+.dataTables_wrapper  {
+    .dataTables_length select, .dataTables_filter input {
+        border-color: $input-border-color;
+        &:hover {
+            border-color: $input-hover-border-color !important;
+        }
+        &:active, &:focus {
+            border-color: $input-focus-border-color !important;
+        }
+    }
 }

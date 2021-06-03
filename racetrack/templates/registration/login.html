@@ -13,6 +13,7 @@
         font-size: 14px;
         font-weight: 300;
         margin: 0;
+        padding: 0;
       }
       .hero.is-success {
         background: #F2F6FA;
@@ -70,9 +71,19 @@
 
     <section class="hero is-success is-fullheight">
         <div class="hero-body">
+            /h2>
             <div class="container has-text-centered">
                 <div class="column is-4 is-offset-4">
-                    <h3 class="title has-text-black">Login</h3>
+
+                        <a class="title media level" id="header-title"  href="{{ url('racetrack:index') }}">
+                            <div class="level-item">
+                                <figure class="media-left level-item image is-64x64">
+                                    <img  src="{{ static('racetrack/images/race-car.png') }}" >
+                                </figure>
+                                <h2>Racetrack.io</h2>
+                            </div>
+                        </a>
+
                     <hr class="login-hr">
                     <p class="subtitle has-text-black">Please login to proceed.</p>
                     <div class="box">
@@ -96,11 +107,12 @@
                             <input type="hidden" name="next" value="{% if next %}{{ next }}{% else %}/racetrack{% endif %}">
                         </form>
                     </div>
+                    <!--
                     <p class="has-text-grey">
                         <a href="../">Sign Up</a> &nbsp;·&nbsp;
                         <a href="../">Forgot Password</a> &nbsp;·&nbsp;
                         <a href="../">Need Help?</a>
-                    </p>
+                    </p>-->
                 </div>
             </div>
         </div>

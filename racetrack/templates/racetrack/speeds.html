@@ -10,12 +10,21 @@
 			{% set current_run=1 %}
 		{% endif %}
         {% set datatables=false %}
+        {% set trials=race.trial_set.all() %}
+        {% if trials %}
+			{% set max_speed=trials.values_list('mph', flat=True)|max %}
+	  	{% else %}
+	  		{% set max_speed=0 %}
+		{% endif %}
         {% set cdn=false %}
 	  	{% set file_name='speeds' %}
 	  	{% include 'racetrack/head.html' %}
     </head>
     <body>
-        <div id="resultsCard_tmpl"></div>
-    </body>
+        <div class="columns">
+            <div id="resultsCard_tmpl" class="column" ></div>
+            <div id="dashboardCard_tmpl" class="column is-4"></div>
+        </div>
+   </body>
 </html>
 

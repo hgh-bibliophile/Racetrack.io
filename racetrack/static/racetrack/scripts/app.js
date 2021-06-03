@@ -7,7 +7,9 @@ $(document).ready( function () {
 
     /* Render Templates */
     var rc_tmpl = $.templates("#resultsCard");
+    var dc_tmpl = $.templates("#dashboardCard");
     $("#resultsCard_tmpl").html(rc_tmpl.render());
+    $("#dashboardCard_tmpl").html(dc_tmpl.render());
 
     function connectSocket() {
         RACETRACK.RACE_UPDATES_SOCKET = new WebSocket(

@@ -65,6 +65,7 @@ class Run(models.Model):
 
 class Trial(models.Model):
     timestamp = models.DateTimeField('Timestamp of trial', default=timezone.now)
+    race = models.ForeignKey(Race, on_delete=models.CASCADE)
     run = models.ForeignKey(Run, on_delete=models.CASCADE)
     track = models.ForeignKey(Track, on_delete=models.CASCADE)
     car = models.ForeignKey(Car, on_delete=models.CASCADE)

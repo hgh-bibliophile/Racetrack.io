@@ -1,13 +1,7 @@
 @import "app.scss";
 
-.centerText {
-    text-align: center;
-}
 
-body, body > div.columns {
-  margin-bottom: 0 !important;
-}
-
+//addCar styling
 #add_car {
     width: 45%;
     > .level-item {
@@ -30,8 +24,6 @@ body, body > div.columns {
     }
 }
 
-
-
 .selected_track {
     background-color: $grey-lightest !important;
 }
@@ -39,47 +31,12 @@ body, body > div.columns {
     background-color: $grey-lighter !important;
 }
 
-
 #run_card {
     margin-bottom: 1.5em;
     .addToTrack {
         //transition: 2s;
     }
 }
-
-#leaderboard {
-
-    margin:0 auto;
-    padding: 0;
-    overflow: clip;
-    > .is-parent {
-        background-color: $primary;
-    }
-    .tile {
-        //border: solid 1px;
-    }
-    #lboard_title {
-        img {
-            filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(201deg) brightness(101%) contrast(104%);
-        }
-        h3 {
-            color: findColorInvert($primary);
-        }
-        align-items: center;
-        padding: .3em;
-        figure {
-            margin-left: 0em;
-            margin-right: 0em;
-        }
-    }
-    #lboard_scores > .is-parent {
-        padding-left: inherit;
-        padding-right: inherit;
-    }
-}
-
-
-
 
 #tabs-with-content {
     .tabs:not(:last-child) {
@@ -96,6 +53,4 @@ body, body > div.columns {
 table.dataTable {
     border-collapse: collapse !important;
 }
-.table,.noBottomMargin {
-    margin-bottom: 0px !important;
-}
+

@@ -9,6 +9,12 @@
 		{% else %}
 			{% set current_run=1 %}
 		{% endif %}
+	  	{% set trials=race.trial_set.all() %}
+		{% if trials %}
+			{% set max_speed=trials.values_list('mph', flat=True)|max %}
+	  	{% else %}
+	  		{% set max_speed=0 %}
+		{% endif %}
 	  	{% set datatables=true %}
 	  	{% set cdn=false %}
 	  	{% set file_name='detail' %}
@@ -17,20 +23,21 @@
   <body>
   	<nav id="header" class="navbar" role="navigation" aria-label="main navigation">
 	  <div class="navbar-brand">
-		<a id="header-title" class="navbar-item" href="{{ url('racetrack:index') }}"><img src="{{ static('racetrack/images/race-car.svg') }}" width="112" height="50">Racetrack.io</a>
+		<a class="title media level" id="header-title"  href="{{ url('racetrack:index') }}">
+			<div class="level-item">
+				<figure class="media-left level-item image is-64x64">
+					<img  src="{{ static('racetrack/images/race-car.png') }}" >
+				</figure>
+				<h2>Racetrack.io</h2>
+			</div>
+		</a>
 	  </div>
-
-	  <div id="navbarBasicExample" class="navbar-menu">
-		<div class="navbar-start">
-		  <a class="navbar-item" href="{{ url('racetrack:index') }}">Home</a>
-		  <a class="navbar-item" href="{{ url('racetrack:speeds', race_id=race.id) }}">Speeds</a>
-		</div>
-
+	  <div class="navbar-menu">
 		<div class="navbar-end">
 		  <div class="navbar-item">
 			<div class="buttons">
-			  <a class="button is-primary">
-				<strong>Start</strong>
+			  <a class="button is-primary is-rounded cursive"  href="{{ url('racetrack:speeds', race_id=race.id) }}">
+				Speeds
 			  </a>
 			</div>
 		  </div>
@@ -38,82 +45,8 @@
 	  </div>
 	</nav>
 
-
 	<div class="columns">
-		<div id="dashboard" class="column is-4">
-			<div id="race_card" class="card">
-				<div class="card-content content">
-					<div id="info" class="media">
-					  <div class="media-left">
-						<figure class="image is-48x48">
-							<img src="{{ static('racetrack/images/race_dash.svg') }}" alt="Placeholder image">
-						</figure>
-					  </div>
-					  <div class="media-content">
-						<p class="title is-4 cursive" style="">{{ race.name }}</p>
-						<p class="subtitle is-6"><strong><time >{{ race.date }}</time></strong> @ {{ race.place }}</p>
-					  </div>
-					</div>
-					<div id="stats" class="level">
-					  <div class="level-item has-text-centered">
-						<div>
-						  <p class="heading">Cars</p>
-						  <p class="title">{{ race.car_set.all().count() }}</p>
-						</div>
-					  </div>
-					  <div class="level-item has-text-centered">
-						<div>
-						  <p class="heading">Runs</p>
-						  <p id="race_runs" class="race_runs title">{{ race.run_set.all().count() }}</p>
-						</div>
-					  </div>
-					  <div class="level-item has-text-centered">
-						<div>
-						  <p class="heading">Top Speed</p>
-						  <p class="title">125 mph</p>
-						</div>
-					  </div>
-					</div>
-					<div id="leaderboard" class="tile box is-10 is-ancestor is-vertical">
-					  <div class="tile is-parent" >
-						<div class="tile is-child">
-							<div id="lboard_title" class="media">
-							  <div class="media-left" >
-								<figure class="image is-48x48">
-									<img src="{{ static('racetrack/images/leaderboard.svg') }}" alt="Placeholder image">
-								</figure>
-							  </div>
-							  <div class="media-content">
-								  <h3 class="cursive is-3 noBottomMargin" >Leaderboard</h3>
-							  </div>
-							</div>
-						</div>
-					  </div>
-					  <div id="lboard_scores" class="tile is-vertical">
-								<div class="tile is-parent">
-									<div class="tile is-child is-1 centerText"></div>
-									<div class="tile is-child"><strong>Car</strong></div>
-									<div class="tile is-child is-1 centerText">Track</div>
-									<div class="tile is-child is-3">Top Speed</div>
-								</div>
-								{% for car in race.car_set.all()[:10] %}
-									<div class="tile is-parent">
-										<div class="tile is-child is-1 centerText">{{ car.id }}</div>
-										<div class="tile is-child"><strong>{{ car.number }} - {{ car.name }}</strong></div>
-										<div class="tile is-child is-1 centerText">4</div>
-										<div class="tile is-child is-3">125 mph</div>
-									</div>
-								{% endfor %}
-					  </div>
-					</div>
-				</div>
-				<!--<footer class="card-footer">
-					<a href="#" class="card-footer-item">Save</a>
-					<a href="#" class="card-footer-item">Edit</a>
-					<a href="#" class="card-footer-item">Delete</a>
-			  	</footer>-->
-			</div>
-		</div>
+		<div id="dashboardCard_tmpl" class="column is-4"></div>
 		<div class="column">
 			<div id="tabs-with-content">
 			  <div class="tabs">

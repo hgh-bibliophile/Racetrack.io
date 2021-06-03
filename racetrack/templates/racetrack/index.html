@@ -10,8 +10,15 @@
   </head>
   <body>
     <nav id="header" class="navbar" role="navigation" aria-label="main navigation">
-	  <div class="navbar-brand">
-		<a id="header-title" class="navbar-item" href="{{ url('racetrack:index') }}">Racetrack.io</a>
+	 <div class="navbar-brand">
+		<a class="title media level" id="header-title"  href="{{ url('racetrack:index') }}">
+			<div class="level-item">
+				<figure class="media-left level-item image is-64x64">
+					<img  src="{{ static('racetrack/images/race-car.png') }}" >
+				</figure>
+				<h2>Racetrack.io</h2>
+			</div>
+		</a>
 	  </div>
 
 	  <div id="navbarBasicExample" class="navbar-menu">
