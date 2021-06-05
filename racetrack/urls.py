@@ -7,5 +7,5 @@ urlpatterns = [
     path('<int:pk>/', views.DetailView.as_view(), name='race'),
     path('<int:race_id>/speeds/', views.speeds, name='speeds'),
     path('<int:race_id>/car/', views.add_car, name='add_car'),
-    path('<int:race_id>/run/', views.add_run, name='add_run'),
+    # path('<int:race_id>/run/', views.add_run, name='add_run'),
 ]

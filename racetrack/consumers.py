@@ -42,8 +42,8 @@ class RaceConsumer(AsyncWebsocketConsumer):
         new_run = None
         try:
             new_run = race_addRun.delay(self.race_id, track_data)
-            test_arduinoReadData.delay(self.channel_name)
-            # arduinoReadData.delay(self.channel_name)
+            # test_arduinoReadData.delay(self.channel_name)
+            arduinoReadData.delay(self.channel_name, self.race_id)
         except Error as e:
             msg_data = e
         finally:
@@ -65,25 +65,37 @@ class RaceConsumer(AsyncWebsocketConsumer):
     async def end_run(self, event):
         print("Saving run", self.channel_name)
         run_data = event['data']
-        error_data = None
+        run_results = None
+        msg_data = None
         try:
-            race_saveRun.delay(self.race_id, run_data)
+            run_results = race_saveRun.delay(self.race_id, run_data['run_results'])
         except Error as e:
-            error_data = e
+            msg_data = e
         finally:
-            await self.channel_layer.group_send(self.race_group_name, {
-                'type': 'send_msg',
-                'data': run_data
-            })
-            if error_data:
+            if not msg_data:
+                msg_data = run_results.get()['msg']
+                if msg_data.get('error', False):
+                    msg_type = 'send_error'
+                    msg_data = msg_data['error']
+                else:
+                    msg_type = 'send_msg'
+            else:
+                msg_type = 'send_error'
                 await self.channel_layer.group_send(self.race_group_name, {
-                    'type': 'send_error',
-                    'data': error_data
+                    'type': 'send_msg',
+                    'data': run_data
                 })
+            results = {
+                'type': msg_type,
+                'data': msg_data
+            }
+            print(results)
+            await self.channel_layer.group_send(self.race_group_name, results)
+
 
     async def send_msg(self, event):
         msg = event['data']
-        # print("Sending msg to", self.channel_name)
+        print("Sending msg to", self.channel_name)
         # print(msg)
         await self.send(text_data=json.dumps(msg))
 

@@ -1,17 +1,32 @@
-{% extends "racetrack/base.html" %}
-
-{% set datatables=true %}
-{% set cdn=false %}
-{% set file_name = "detail" %}
-
-{% block title %} {{ race.name }} {% endblock %}
-{% block content %}
-	<nav id="header" class="navbar" role="navigation" aria-label="main navigation">
+<!DOCTYPE html>
+<html>
+  <head>
+		<meta charset="utf-8">
+		<title>{{ race.name }}</title>
+	  	{% set runs=race.run_set.all() %}
+		{% if runs %}
+			{% set current_run=runs.values_list('number', flat=True)|max %}
+		{% else %}
+			{% set current_run=1 %}
+		{% endif %}
+	  	{% set trials=race.trial_set.all() %}
+		{% if trials %}
+			{% set max_speed=trials.values_list('mph', flat=True)|max %}
+	  	{% else %}
+	  		{% set max_speed=0 %}
+		{% endif %}
+	  	{% set datatables=true %}
+	  	{% set cdn=false %}
+	  	{% set file_name='detail' %}
+	  	{% include 'racetrack/head.html' %}
+  </head>
+  <body>
+  	<nav id="header" class="navbar" role="navigation" aria-label="main navigation">
 	  <div class="navbar-brand">
-		<a class="title media level" id="header-title"  href={{url("racetrack:index")}}">
+		<a class="title media level" id="header-title"  href="{{ url('racetrack:index') }}">
 			<div class="level-item">
-				<figure class="media-left level_item image is-64x64">
-					<img  src={{static("racetrack/images/race-car.png")}}>
+				<figure class="media-left level-item image is-64x64">
+					<img  src="{{ static('racetrack/images/race-car.png') }}" >
 				</figure>
 				<h2>Racetrack.io</h2>
 			</div>
@@ -21,7 +36,7 @@
 		<div class="navbar-end">
 		  <div class="navbar-item">
 			<div class="buttons">
-			  <a class="button is-primary is-rounded cursive"  href={{url("racetrack:speeds",race_id=race.id)}}>
+			  <a class="button is-primary is-rounded cursive"  href="{{ url('racetrack:speeds', race_id=race.id) }}">
 				Speeds
 			  </a>
 			</div>
@@ -36,20 +51,20 @@
 			<div id="tabs-with-content">
 			  <div class="tabs">
 				<ul>
-					<li><a>Cars</a></li>
-					<li><a>Race</a></li>
-					<li><a>Runs</a></li>
+					<li class="{% if start_tab == 'Cars' %}is-active{% endif %}"><a>Cars</a></li>
+					<li class="{% if start_tab == 'Race' %}is-active{% endif %}"><a>Race</a></li>
+					<li class="{% if start_tab == 'Runs' %}is-active{% endif %}"><a>Runs</a></li>
 				</ul>
 			  </div>
 			  <div>
-				<section class="tab-content" id="tab-cars"><!--Cars Tab-->
+				<section class="tab-content {% if start_tab == 'Cars' %}is-active{% endif %}" id="tab-cars"><!--Cars Tab-->
 					<div id="addCar_tmpl"></div>
 					<div id="carTbl_cars_tmpl"></div>
 				</section>
-				<section class="tab-content" id="tab-race">
+				<section class="tab-content {% if start_tab == 'Race' %}is-active{% endif %}" id="tab-race">
 
 				</section>
-				<section class="tab-content" id="tab-runs">
+				<section class="tab-content {% if start_tab == 'Runs' %}is-active{% endif %}" id="tab-runs">
 					<div id="run_card" class="card">
 						<div class="card-header">
 							<div id="run_title" class="run_title card-header-title">Run #{{ current_run + 1 }}</div>
@@ -57,7 +72,7 @@
 									<div class="control">
 										<button class="button is-rounded is-primary hidden" id="new_run" autocomplete="off">New Run</button>
 									</div>
-									<div class="control">
+									<div class="control"><!--data-ajax-target="{{ url('racetrack:add_run', race_id=race.id) }}" -->
 										<button class="button is-rounded is-primary" id="post_run" autocomplete="off" disabled="True">Start Run</button>
 									</div>
 							</div>
@@ -89,4 +104,5 @@
 			</div>
 		</div>
 	</div>
-{% endblock %}
+  </body>
+</html>

@@ -23,16 +23,34 @@ $(document).ready( function () {
                 RACETRACK.CURRENT_RUN = data.run_num;
                 $(".run_title").html("Run #" + RACETRACK.CURRENT_RUN);
                 $(".race_runs").html(RACETRACK.CURRENT_RUN);
-                $tracks = $("#results_tracks");
+                $tracks = $("#results_tracks, #race_results");
                 $tracks.find(".track_car").addClass("invisible").html("-");
                 $tracks.find(".track_car_number").removeClass("invisible");
+            }
+            if (data.arduino_ready) {
+                alert("Ready")
             }
             if (data.run_results) {
                 for (const [track, trial] of Object.entries(data.run_results)) {
                   let $track = $('#track_'+ track);
                   for (const [key,val] of Object.entries(trial)) {
-                    if (!val) { break; }
+                    if (!val) {
+                        if (val == 0) {
+                            $track.find('.track_car_' + key).removeClass('invisible').html('-');
+                        } else {
+                            break;
+                        }
+                    }
                     $track.find('.track_car_' + key).removeClass('invisible').html(val);
+                  }
+                }
+            }
+            if (data.leaderboard) {
+                for (const [rank, trial] of Object.entries(data.leaderboard)) {
+                  let $rank = $('#rank_'+ rank);
+                  for (let [key,val] of Object.entries(trial)) {
+                    if (!val) { val = "-" }
+                    $rank.find("." + key).html(val);
                   }
                 }
             }

@@ -2,7 +2,7 @@
 //@import url('https://fonts.googleapis.com/css2?family=Comfortaa');
 @import url('https://fonts.googleapis.com/css2?family=Baloo+2&family=Comfortaa&family=Gruppo&family=Poiret+One&display=swap');
 // Set your brand colors
-
+@import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;500;600&display=swap');
 
 /* SCSS HEX */
 $cg-blue: #0081a7ff;
@@ -74,7 +74,7 @@ $background: #F8F9FA;
 
 body {
     font-family: $family-sans-serif;
-    padding: 15px;
+    padding: 1rem;
 }
 body, body > div.columns {
     margin-bottom: 0 !important;
@@ -85,6 +85,10 @@ body, body > div.columns {
 }
 .hidden {
     display: none;
+}
+
+.strong {
+  font-weight: bold !important;
 }
 .centerText {
     text-align: center;
@@ -143,7 +147,7 @@ body, body > div.columns {
 
 
 #header {
-    margin-bottom: 15px;
+    margin-bottom: 10px;
 }
 #header-title {
     @extend %font-cursive;
@@ -151,7 +155,48 @@ body, body > div.columns {
     color: $primary;
 }
 .navbar-brand {
-    padding-left: 1.25em;
+    padding-left: 1.15em;
+}
+#race_results .columns:last-child {
+    margin-bottom: -1.75rem;
+    .heading {
+        font-size: 17px;
+    }
+    .is-track {
+        height: calc(50vh - (1rem));
+        padding-top: 0;
+        padding-bottom: 1.5rem;
+        &:nth-child(odd) {
+            padding-left: 0;
+            padding-right: 1rem;
+        }
+        &:nth-child(even) {
+            padding-left: 1rem;
+        }
+        .card {
+            //height: calc(50vh - 1.25rem - (2.5 * 0.75rem));
+
+        }
+        .speed_title {
+            margin-bottom: 2rem !important;
+        }
+        .card {
+          height: 100%;
+          min-height: 325px;
+          display: flex;
+          flex-direction: column;
+          .columns.level .column {
+                padding: 0;
+            }
+        }
+        .card-content {
+            height: 100%;
+        }
+        .card-footer {
+            height: 20rem;
+            padding-bottom: 2rem;
+        }
+    }
 }
 
 #race_card {

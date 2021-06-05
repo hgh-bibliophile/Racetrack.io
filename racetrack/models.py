@@ -15,6 +15,8 @@ class Race(models.Model):
 class Track(models.Model):
     race = models.ForeignKey(Race, on_delete=models.CASCADE)
     number = models.IntegerField('Track number')
+    name = models.CharField('Track name', max_length=75)
+    distance = models.FloatField('Distance between sensors')
 
     class Meta:
         constraints = [
@@ -26,6 +28,7 @@ class Track(models.Model):
 
     def __str__(self):
         return 'Track #' + str(self.number)
+
 
 
 class Car(models.Model):

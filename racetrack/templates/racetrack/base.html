@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% set runs=race.run_set.all() %}
+        {% if runs %}
+            {% set current_run=runs.values_list('number', flat=True)|max %}
+        {% else %}
+            {% set current_run=1 %}
+        {% endif %}
+    {% set trials=race.trial_set.all() %}
+        {% if trials %}
+			{% set max_speed=trials.values_list('mph', flat=True)|max %}
+	  	{% else %}
+	  		{% set max_speed=0 %}
+		{% endif %}
+    <meta charset="utf-8">
+    <meta name="race-id" content="{{ race.id }}"/>
+    <meta name="current-run" content="{{ current_run }}"/>
+    {% block head_imports %}
+    <script type="text/javascript" src="{{ static('racetrack/lib/js/jquery-3.6.0.min.js') }}"></script>
+<!--    <script type="text/javascript" src="{{ static('racetrack/lib/js/jquery.animateNumbers.min.js') }}"></script>-->
+    <script type="text/javascript" src="{{ static('racetrack/lib/js/lodash.min.js') }}"></script>
+    <script type="text/javascript" src="{{ static('racetrack/lib/js/jsrender.min.js') }}"></script>
+<!--    <script type="text/javascript" src="{{ static('racetrack/lib/js/enquire.min.js') }}"></script>-->
+    {% if datatables %}
+    <script type="text/javascript" src="{{ static('racetrack/lib/js/datatables.min.js') }}"></script>
+    <script type="text/javascript" src="{{ static('racetrack/lib/js/dataTables.bulma.min.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ static('racetrack/lib/css/datatables.min.css') }}"/>
+    {% endif %}
+    <script type="text/javascript" src="{{ static('racetrack/scripts/app.js') }}"></script>
+    <script type="text/javascript" src="{{ static('racetrack/scripts/' + file_name + '.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ static('racetrack/styles/' + file_name + '.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    {% endblock %}
+    <title>{% block title %}Racetrack.io{% endblock %}</title>
+    <link rel="shortcut icon" type="image/png" href="{{ static('racetrack/images/favicon.ico') }}"/>
+
+    {% block templates scoped %}
+    {% if datatables %}
+    <script id="addCar" type="text/x-jsrender">
+        <!--<script>
+            var tmpl = $.templates("#addCar");
+            var html = tmpl.render();
+            $("#add_car_tmplt").html(html);
+
+            $('#car_number').on('input', function() {
+                let value = $(this).val();
+                let help = $('#car_number_help');
+                let integer = /^-?\d+$/.test(value);
+                let inArray = $.inArray(value, cars_num.toArray()) !== -1;
+                if (!value) {
+                    help.html("-");
+                    help.removeClass('is-danger').addClass('invisible');
+                } else if (!integer) {
+                    help.html("Not an integer");
+                    help.removeClass('invisible').addClass('is-danger');
+                } else if (inArray) {
+                    help.html("Car #" + value + " already exists");
+                    help.removeClass('invisible').addClass('is-danger');
+                } else {
+                    help.html("-");
+                    help.removeClass('is-danger').addClass('invisible');
+                }
+            });
+        <script>-->
+        {% if car_error %}<p class="content"><strong>{{ car_error }}</strong></p>{% endif %}
+        <div class="level noBottomMargin">
+            <form id="add_car" class="level-left" action="{{ url('racetrack:add_car', race_id=race.id) }}" method="POST">
+                <input type="hidden" name="csrfmiddlewaretoken" value="{{csrf_token}}">
+                <div class="level-item">
+                    <div class="field has-addons">
+                        <div class="control">
+                            <input class="input" type="text" name="name" id="car_name" placeholder="Car owner">
+                        </div>
+                        <div class="control">
+                            <input class="input" type="text" name="number" id="car_number" placeholder="Car #" >
+                            <p id="car_number_help"  class="help invisible">-</p>
+                        </div>
+                        <div class="control">
+                            <input type="submit" class="button" value="Add Car">
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </script> <!--array of car #s-->
+    <script id="carTbl" type="text/x-jsrender">
+        <table  id="cars_{% raw %}{{:name}}{% endraw %}" class="table is-fullwidth is-bordered is-striped is-hoverable">
+            <thead>
+                <tr>
+                    <th id="#cars_num_{% raw %}{{:name}}{% endraw %}">#</th>
+                    <th id="#cars_name_{% raw %}{{:name}}{% endraw %}">Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for car in race.car_set.all() %}
+                    <tr>
+                        <td>{{ car.number }}</td>
+                        <td>{{ car.name }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </script> <!-- pass name -->
+    {% endif %}
+    <script id="resultsCard" type="text/x-jsrender">
+        <div id="results_card" class="card {% if datatables %}hidden{% endif %}">
+            <div class="card-header">
+                <div id="results_title" class="run_title card-header-title">Run #{{ current_run }}</div>
+            </div>
+            <div class="card-content">
+              <div id="results_tracks" class="level columns">
+                  {% for track in race.track_set.all() %}
+                    <div id="track_{{ track.number }}" class="results_track level-item column has-text-centered">
+                        <div class="field content">
+                            <p class="heading">Track {{ track.number }}</p>
+                            <p class="track_car_number track_car title">-</p>
+                            <p class="track_car_name track_car subtitle invisible">-</p>
+                            <p class="track_car_mph track_car title invisible">-</p>
+                            <p class="track_car_fps track_car title invisible">-</p>
+                            <p class="track_car_mps track_car title invisible">-</p>
+                        </div>
+                    </div>
+                  {% endfor %}
+              </div>
+            </div>
+        </div>
+    </script>
+    <script id="dashboardCard" type="text/x-jsrender">
+        <div id="race_card" class="card">
+            <div class="card-content content">
+                <div id="info" class="media">
+                  <div  class="media-left">
+                    <figure id="race_img" class="image is-48x48">
+                        <img src="{{ static('racetrack/images/race_dash.svg') }}" alt="Placeholder image">
+                    </figure>
+                  </div>
+                  <div class="media-content">
+                    <p class="title is-4 cursive" style="">{{ race.name }}</p>
+                    <p class="subtitle is-6 cursive"><strong><time >{{ race.date }}</time></strong> @ {{ race.place }}</p>
+                  </div>
+                </div>
+                <div id="stats" class="level is-mobile">
+                  <div class="level-item has-text-centered">
+                    <div>
+                      <p class="heading">Cars</p>
+                      <p class="title cursive">{{ race.car_set.all().count() }}</p>
+                    </div>
+                  </div>
+                  <div class="level-item has-text-centered">
+                    <div>
+                      <p class="heading">Runs</p>
+                      <p id="race_runs" class="race_runs title cursive">{{ race.run_set.all().count() }}</p>
+                    </div>
+                  </div>
+                  <div class="level-item has-text-centered">
+                    <div>
+                        <p class="heading">Top Speed</p>
+                        <p class="title cursive">{{ max_speed|round|int }} mph</p>
+                    </div>
+                  </div>
+                </div><!--Good-->
+                <div id="leaderboard" class="tile box is-ancestor is-vertical">
+                  <div class="tile is-parent" >
+                    <div class="tile is-child">
+                        <div id="lboard_title" class="media">
+                          <div class="media-left" >
+                            <figure class="image is-48x48">
+                                <img src="{{ static('racetrack/images/leaderboard.svg') }}" alt="Placeholder image">
+                            </figure>
+                          </div>
+                          <div class="media-content">
+                              <h3 class="cursive is-3 noBottomMargin" >Leaderboard</h3>
+                          </div>
+                        </div>
+                    </div>
+                  </div>
+                  <div id="lboard_scores" class="tile is-vertical">
+                            <div class="tile is-parent level is-mobile has-text-centered">
+                                <div id="car-th" class="tile is-child is-7 level-item">
+                                    <strong>Racecar • Owner</strong>
+                                </div>
+                                <div id="speed-th" class="tile is-child is-5 level-item">
+                                    <strong>MPH</strong>
+                                </div>
+                            </div>
+                                {% set ordered_trials=(trials|sort(reverse=true, attribute='mph')|unique(attribute='car')|list)[:10] %}
+                                {% for i in range(10) %}
+                                    {% if ordered_trials[i] is defined %}
+                                        {% set trial=ordered_trials[i] %}
+                                        <div class="divider-row"></div>
+                                        <div id="rank_{{ loop.index }}" class="tile is-parent level is-mobile">
+                                            <div class="data-1 tile is-child is-9 level-item level level-left is-mobile">
+                                                <div class="level-item rank strong">{{ loop.index }}</div>
+                                                <div class="level-item car_num quicksand">{{ trial.car.number }}</div>
+                                                <div class="level-item dot quicksand">•</div>
+                                                <div class="level-item car textOverflow quicksand">{{ trial.car.name }}</div>
+                                            </div>
+                                            <div class="tile is-child is-3 level-item level level-right is-mobile">
+                                                <div class="level-item track">T{{ trial.track.number }} </div>
+                                                <div class="level-item speed strong">{{ trial.mph|round(precision=2) }}</div>
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        <div class="divider-row"></div>
+                                        <div id="rank_{{ loop.index }}" class="tile is-parent level is-mobile">
+                                            <div class="data-1 tile is-child is-9 level-item level level-left is-mobile">
+                                                <div class="level-item rank strong">{{ loop.index }}</div>
+                                                <div class="level-item car_num quicksand">-</div>
+                                                <div class="level-item dot quicksand">•</div>
+                                                <div class="level-item car textOverflow quicksand">-</div>
+                                            </div>
+                                            <div class="tile is-child is-3 level-item level level-right is-mobile">
+                                                <div class="level-item track">-</div>
+                                                <div class="level-item speed strong">-</div>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                  </div>
+                </div>
+            </div>
+        </div>
+    </script>
+    {% endblock %}
+</head>
+<body>
+        {% block content %}{% endblock %}
+</body>
+</html>
