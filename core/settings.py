@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-twdru1nbd9k7*6%tw%gb$=6t^(8o40korr9d+g=*z9z7_k2l)h
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [ gethostname(), gethostbyname(gethostname()), 'localhost' ]
+ALLOWED_HOSTS = [ gethostname(), gethostbyname(gethostname()), 'localhost', '127.0.0.1' ]
 
 
 # Application definition
@@ -81,6 +81,14 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'core.wsgi.application'
+ASGI_APPLICATION = "core.asgi.application"
+
+# Celery
+# Use CELERY_ prefix
+#CELERY_BROKER_URL = 'amqp://localhost'
+CELERY_BROKER_URL = REDIS_URL
+CELERY_RESULT_BACKEND = REDIS_URL
+
 
 
 # Database
@@ -93,6 +101,31 @@ DATABASES = {
     }
 }
 
+# channels
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [REDIS_URL],
+        },
+    },
+}
+
+# redis
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.redis.RedisCache',
+        'LOCATION': 'redis://127.0.0.1:6379',
+    }
+    #"default": {
+    #    "BACKEND": "django_redis.cache.RedisCache",
+    #    "LOCATION": REDIS_URL,  # Here we have Redis DSN (for ex. redis://localhost:6379/1)
+    #    "OPTIONS": {
+    #        "CLIENT_CLASS": "django_redis.client.DefaultClient",
+    #        "MAX_ENTRIES": 1000  # Increase max cache entries to 1k (from 300)
+    #    },
+    #}
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -136,33 +169,3 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-# Added Data
-
-# Channels
-ASGI_APPLICATION = "core.asgi.application"
-
-CHANNEL_LAYERS = {
-    'default': {
-        'BACKEND': 'channels_redis.core.RedisChannelLayer',
-        'CONFIG': {
-            "hosts": [REDIS_URL],
-        },
-    },
-}
-# django-redis
-CACHES = {
-    "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": REDIS_URL,  # Here we have Redis DSN (for ex. redis://localhost:6379/1)
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
-            "MAX_ENTRIES": 1000  # Increase max cache entries to 1k (from 300)
-        },
-    }
-}
-
-# Celery
-# Use CELERY_ prefix
-CELERY_BROKER_URL = REDIS_URL
-CELERY_RESULT_BACKEND = REDIS_URL

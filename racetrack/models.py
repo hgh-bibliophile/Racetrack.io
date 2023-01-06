@@ -2,14 +2,14 @@ from django.db import models
 from django.utils import timezone
 
 
-# Create your models here. worthyderby_4cjkids
+# Create your models here. worthyderby_4cjkids, worthyderby_hannah
 class Race(models.Model):
     name = models.CharField('Race name', max_length=75)
     place = models.CharField('Place race occurred - opt', max_length=200)
     date = models.DateField('Date of race', auto_now_add=True)
 
     def __str__(self):
-        return self.name + ': ' + str(self.date)
+        return str(self.name) + ': ' + str(self.date)
 
 
 class Track(models.Model):
@@ -30,7 +30,6 @@ class Track(models.Model):
         return 'Track #' + str(self.number)
 
 
-
 class Car(models.Model):
     race = models.ForeignKey(Race, on_delete=models.CASCADE)
     name = models.CharField('Car / owner name', max_length=100)
@@ -45,7 +44,7 @@ class Car(models.Model):
         ]
 
     def __str__(self):
-        return self.name + ': ' + str(self.number)
+        return str(self.name) + ': ' + str(self.number)
 
 
 class Run(models.Model):

@@ -1,12 +1,5 @@
-import pprint
-import serial
-import time
-
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
-from celery import shared_task
-from django.db import Error
-from django.db.models import Max
 from racetrack.models import Race
 from racetrack.tasks import car_name, car_number
 

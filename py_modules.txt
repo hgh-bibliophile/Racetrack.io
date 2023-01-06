@@ -1,0 +1,6 @@
+django
+channels-redis
+celery
+django_jinja
+serial
+redis
